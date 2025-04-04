@@ -9,7 +9,7 @@ from germinator import Germinator
 def configure_page():
     st.set_page_config(
         page_title="Tom.Camp Data",
-        page_icon=":wave:",
+        page_icon=":seedling:",
         layout="wide",
         initial_sidebar_state="expanded",
     )
@@ -19,7 +19,7 @@ def configure_header():
     st.markdown("## Tom.Camp Data\n")
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def fetch_data(url: str) -> dict:
     response = requests.get(url, timeout=10)
     return response.json()
@@ -27,9 +27,12 @@ def fetch_data(url: str) -> dict:
 
 def germination(response_data: Germinator):
     df = pd.DataFrame(response_data.processed_data)
+    df = df.sort_values(by="timestamp")
 
+    # Device info
     st.header("Device Information")
     col1, col2, col3 = st.columns(3)
+
     with col1:
         st.metric("Device ID", response_data.data.get("device_id", "Unknown"))
     with col2:
@@ -46,7 +49,6 @@ def germination(response_data: Germinator):
     st.header("Humidity Monitoring")
     fig_humidity = go.Figure()
 
-    # Add actual humidity line
     fig_humidity.add_trace(
         go.Scatter(
             x=df["timestamp"],
@@ -57,7 +59,6 @@ def germination(response_data: Germinator):
         )
     )
 
-    # Add target range as a filled area
     fig_humidity.add_trace(
         go.Scatter(
             x=df["timestamp"],
@@ -89,6 +90,7 @@ def germination(response_data: Germinator):
     )
     st.plotly_chart(fig_humidity, use_container_width=True)
 
+    # Temperature
     st.header("Temperature Monitoring")
     fig_temp = go.Figure()
 
@@ -102,7 +104,6 @@ def germination(response_data: Germinator):
         )
     )
 
-    # Add target range as a filled area
     fig_temp.add_trace(
         go.Scatter(
             x=df["timestamp"],
