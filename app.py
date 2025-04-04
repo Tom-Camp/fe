@@ -43,7 +43,7 @@ def germination(response_data: Germinator):
         )
         st.metric("Phase", phase)
     with col3:
-        st.metric("Data Points", len(response_data.data))
+        st.metric("Data Points", len(response_data.data.get("data", {})))
 
     # Humidity
     st.header("Humidity Monitoring")
