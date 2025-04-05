@@ -1,27 +1,13 @@
-FROM python:3.13-bookworm AS builder
-
-RUN apt-get update && apt-get install --no-install-recommends -y \
-	build-essential && \
-	apt-get clean && rm -rf /var/lib/apt/lists/*
-
-ADD https://astral.sh/uv/install.sh /install.sh
-RUN chmod -R 755 /install.sh && /install.sh && rm /install.sh
-
-ENV PATH="/root/.local/bin:$PATH"
+FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY ./pyproject.toml .
+COPY requirements.txt .
 
-RUN uv sync
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-WORKDIR /app
-
-COPY /src src
-COPY --from=builder /app/.venv .venv
-
-ENV PATH="/app/.venv/bin:$PATH:"
+COPY . .
 
 EXPOSE 8501
 
-ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "Home.py", "--server.port=8501", "--server.address=0.0.0.0"]

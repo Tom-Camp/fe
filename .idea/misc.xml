@@ -4,7 +4,8 @@
     <option name="sdkName" value="uv (tmcfe)" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="uv (fe)" project-jdk-type="Python SDK" />
 </project>
