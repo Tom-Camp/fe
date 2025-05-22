@@ -22,6 +22,14 @@ a [capacitive soil sensor](https://www.adafruit.com/product/4026), an
 and 4 banks of [256 LEDs](https://www.aliexpress.us/item/3256803715519232.html)
 in different wavelengths.
 
+### The NuLay Inn
+
+The NuLay Inn is used to track the environment within our chicken coop. It uses
+a [Adafruit Feather RP2040 RFM95](https://www.adafruit.com/product/5714) to send
+data over a [LoRa](https://circuitdigest.com/article/introduction-to-lora-and-lorawan-what-is-lora-and-how-does-it-work)
+network. The NuLay checks the temperature and humidity inside and outside the coop, as well as checking for
+volatile organic compounds (VOX) inside the coop.
+
 
 ## License
 

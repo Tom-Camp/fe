@@ -5,15 +5,13 @@ import plotly.graph_objects as go
 import requests
 import streamlit as st
 
+from base import BaseClass
 
-class Germinator:
-    data: dict = {}
-    readings: list = []
-    processed_data: list = []
+
+class Germinator(BaseClass):
 
     def __init__(self, data: dict):
-        self.data = data
-        self.readings = self.data.get("data", [])
+        super().__init__(data)
         self.__process_data()
 
     def __process_data(self):
@@ -262,7 +260,7 @@ def germination(response_data: Germinator):
     fig_soil_moisture.update_layout(
         title="Soil Moisture Over Time with Target Range",
         xaxis_title="Time",
-        yaxis_title="Temperature (°F)",
+        yaxis_title="Moisture",
         hovermode="x unified",
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
@@ -285,4 +283,4 @@ st.title("The Germinator")
 
 data = fetch_data(url=st.secrets["germinator_url"])
 germinator = Germinator(data=data)
-germination(germinator)
+germination(response_data=germinator)
