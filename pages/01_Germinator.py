@@ -5,13 +5,15 @@ import plotly.graph_objects as go
 import requests
 import streamlit as st
 
-from base import BaseClass
 
+class Germinator:
+    data: dict = {}
+    readings: list = []
+    processed_data: list = []
 
-class Germinator(BaseClass):
-
-    def __init__(self, data: dict):
-        super().__init__(data)
+    def __init__(self, seed_data: dict):
+        self.data = seed_data
+        self.readings = self.data.get("data", [])
         self.__process_data()
 
     def __process_data(self):
@@ -19,32 +21,32 @@ class Germinator(BaseClass):
             created = reading.get("created_date")
             offset = timedelta(hours=-4)
             timestamp = datetime.fromisoformat(created.replace("Z", "+00:00")) + offset
-            data = reading.get("data", {})
+            seed_data = reading.get("data", {})
             entry = {
                 "timestamp": timestamp,
-                "lights_on": data.get("lights", False),
-                "soil_temp": data.get("soil", {}).get("soil_temp", 0),
+                "lights_on": seed_data.get("lights", False),
+                "soil_temp": seed_data.get("soil", {}).get("soil_temp", 0),
                 "soil_temp_target_high": 86,
                 "soil_temp_target_low": 65,
-                "soil_moisture": data.get("soil", {}).get("moisture", 0),
+                "soil_moisture": seed_data.get("soil", {}).get("moisture", 0),
                 "soil_moisture_target_high": 1200,
                 "soil_moisture_target_low": 800,
-                "humidity_actual": data.get("air", {})
+                "humidity_actual": seed_data.get("air", {})
                 .get("humidity", {})
                 .get("actual", 0),
-                "humidity_target_low": data.get("air", {})
+                "humidity_target_low": seed_data.get("air", {})
                 .get("humidity", {})
                 .get("target", [])[0],
-                "humidity_target_high": data.get("air", {})
+                "humidity_target_high": seed_data.get("air", {})
                 .get("humidity", {})
                 .get("target", [])[1],
-                "temp_actual": data.get("air", {})
+                "temp_actual": seed_data.get("air", {})
                 .get("temperature", {})
                 .get("actual", 0),
-                "temp_target_low": data.get("air", {})
+                "temp_target_low": seed_data.get("air", {})
                 .get("temperature", {})
                 .get("target", [])[0],
-                "temp_target_high": data.get("air", {})
+                "temp_target_high": seed_data.get("air", {})
                 .get("temperature", {})
                 .get("target", [])[1],
             }
@@ -282,5 +284,5 @@ st.set_page_config(
 st.title("The Germinator")
 
 data = fetch_data(url=st.secrets["germinator_url"])
-germinator = Germinator(data=data)
+germinator = Germinator(seed_data=data)
 germination(response_data=germinator)

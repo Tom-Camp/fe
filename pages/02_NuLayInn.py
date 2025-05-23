@@ -5,13 +5,15 @@ import plotly.graph_objects as go
 import requests
 import streamlit as st
 
-from base import BaseClass
 
+class NuLayInn:
+    data: dict = {}
+    readings: list = []
+    processed_data: list = []
 
-class NuLayInn(BaseClass):
-
-    def __init__(self, data: dict):
-        super().__init__(data)
+    def __init__(self, coop_data: dict):
+        self.data = coop_data
+        self.readings = self.data.get("data", [])
         self.__process_data()
 
     def __process_data(self):
@@ -19,18 +21,18 @@ class NuLayInn(BaseClass):
             created = reading.get("created_date")
             offset = timedelta(hours=-4)
             timestamp = datetime.fromisoformat(created.replace("Z", "+00:00")) + offset
-            data = reading.get("data", {})
+            coop_data = reading.get("data", {})
             entry = {
                 "timestamp": timestamp,
-                "battery": data.get("battery"),
-                "outside_temp": data.get("outside", {}).get("air_temp", 0.0),
-                "outside_humidity": data.get("outside", {}).get("humidity", 0.0),
-                "coop_temp": data.get("coop", {}).get("coop_temp", 0.0),
-                "coop_humidity": data.get("coop", {}).get("coop_humidity", 0.0),
-                "coop_gas": data.get("coop", {}).get("coop_gas", 0.0),
+                "battery": coop_data.get("battery", 0.0),
+                "outside_temp": coop_data.get("outside", {}).get("air_temp", 0.0),
+                "outside_humidity": coop_data.get("outside", {}).get("humidity", 0.0),
+                "coop_temp": coop_data.get("coop", {}).get("coop_temp", 0.0),
+                "coop_humidity": coop_data.get("coop", {}).get("coop_humidity", 0.0),
+                "coop_gas": coop_data.get("coop", {}).get("coop_gas", 0.0),
                 "gas_low": 0.0,
                 "gas_high": 10000.0,
-                "coop_pressure": data.get("coop", {}).get("coop_pressure", 0.0),
+                "coop_pressure": coop_data.get("coop", {}).get("coop_pressure", 0.0),
             }
             self.processed_data.append(entry)
 
@@ -201,6 +203,5 @@ st.set_page_config(
 st.title("NuLay Inn")
 
 data = fetch_data(url=st.secrets["nulay_url"])
-print(data)
-nu_lay = NuLayInn(data=data)
+nu_lay = NuLayInn(coop_data=data)
 nulay_display(response_data=nu_lay)
