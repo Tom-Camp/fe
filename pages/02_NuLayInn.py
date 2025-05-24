@@ -139,7 +139,7 @@ def nulay_display(response_data: NuLayInn):
             y=df["gas_high"],
             mode="lines",
             name="Unclean air",
-            line=dict(color="brown", width=2, dash="dash"),
+            line=dict(color="grey", width=2, dash="dash"),
         )
     )
 
@@ -148,9 +148,9 @@ def nulay_display(response_data: NuLayInn):
             x=df["timestamp"],
             y=df["gas_low"],
             mode="lines",
-            line=dict(color="brown", width=2, dash="dash"),
+            line=dict(color="grey", width=2, dash="dash"),
             fill="tonexty",
-            fillcolor="rgba(0, 255, 0, 0.1)",
+            fillcolor="rgba(234, 210, 180, 0.8)",
         )
     )
 
