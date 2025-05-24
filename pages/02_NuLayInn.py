@@ -114,7 +114,7 @@ def nulay_display(response_data: NuLayInn):
     st.plotly_chart(fig_coop_humid, use_container_width=True)
 
     # Mox
-    st.header("Volatile Organic Compound (VOX) Monitoring")
+    st.header("Volatile Organic Compound (VOC) Monitoring")
 
     # Mox Chart
     fig_mox = go.Figure()
@@ -155,9 +155,9 @@ def nulay_display(response_data: NuLayInn):
     )
 
     fig_mox.update_layout(
-        title="Coop Metal Oxide (MOS) Gas Over Time with Poor Air Zone",
+        title="Volatile Organic Compound (VOC) Gas Over Time",
         xaxis_title="Time",
-        yaxis_title="Temperature (°F)",
+        yaxis_title="VOC (Ω)",
         hovermode="x unified",
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
