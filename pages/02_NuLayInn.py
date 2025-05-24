@@ -37,7 +37,7 @@ class NuLayInn:
             self.processed_data.append(entry)
 
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=900)
 def fetch_data(url: str) -> dict:
     response = requests.get(url, timeout=10)
     return response.json()
