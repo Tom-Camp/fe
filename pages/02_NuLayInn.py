@@ -44,6 +44,10 @@ def fetch_data(url: str) -> dict:
 
 
 def nulay_display(response_data: NuLayInn):
+    with st.container():
+        last_date: datetime = response_data.processed_data[-1].get("timestamp")
+        st.write(f'Last Post Date: {last_date.strftime("%H:%M %B %e, %Y")}')
+
     df = pd.DataFrame(response_data.processed_data)
     df = df.sort_values(by="timestamp")
 

@@ -11,7 +11,7 @@ the Git repo for it can be found [on Github](https://github.com/Tom-Camp/fe).
 
 ## Devices
 
-### The Germinator
+### <a href="Germinator" target="_self">The Germinator</a>
 
 The Germinator controls a bank of LEDs in different wavelengths to encourage
 germination and solid root development. It also monitors the temperature and
@@ -22,7 +22,7 @@ a [capacitive soil sensor](https://www.adafruit.com/product/4026), an
 and 4 banks of [256 LEDs](https://www.aliexpress.us/item/3256803715519232.html)
 in different wavelengths.
 
-### The NuLay Inn
+### <a href="NuLayInn" target="_self">The NuLay Inn</a>
 
 The NuLay Inn is used to track the environment within our chicken coop. It uses
 a [Adafruit Feather RP2040 RFM95](https://www.adafruit.com/product/5714) to send

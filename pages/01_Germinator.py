@@ -65,7 +65,7 @@ def germination(response_data: Germinator):
 
     # Device info
     st.header("Device Information")
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         st.metric("Device ID", response_data.data.get("device_id", "Unknown"))
@@ -78,6 +78,10 @@ def germination(response_data: Germinator):
         st.metric("Phase", phase)
     with col3:
         st.metric("Data Points", len(response_data.data.get("data", {})))
+
+    with st.container():
+        last_date: datetime = response_data.processed_data[-1].get("timestamp")
+        st.write(f'Last Post Date: {last_date.strftime("%H:%M %B %e, %Y")}')
 
     # Humidity
     st.header("Humidity Monitoring")
