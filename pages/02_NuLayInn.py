@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -10,6 +11,7 @@ class NuLayInn:
     data: dict = {}
     readings: list = []
     processed_data: list = []
+    errors: list = []
 
     def __init__(self, coop_data: dict):
         self.data = coop_data
@@ -19,11 +21,12 @@ class NuLayInn:
     def __process_data(self):
         for reading in self.readings:
             created = reading.get("created_date")
-            offset = timedelta(hours=-4)
-            timestamp = datetime.fromisoformat(created.replace("Z", "+00:00")) + offset
+            timestamp = datetime.fromisoformat(created)
+            if timestamp.tzinfo is None:
+                timestamp = timestamp.replace(tzinfo=timezone.utc)
             coop_data = reading.get("data", {})
             entry = {
-                "timestamp": timestamp,
+                "timestamp": timestamp.astimezone(tz=ZoneInfo("America/New_York")),
                 "battery": coop_data.get("battery", 0.0),
                 "outside_temp": coop_data.get("outside", {}).get("air_temp", 0.0),
                 "outside_humidity": coop_data.get("outside", {}).get("humidity", 0.0),
@@ -34,6 +37,14 @@ class NuLayInn:
                 "gas_high": 10000.0,
                 "coop_pressure": coop_data.get("coop", {}).get("coop_pressure", 0.0),
             }
+
+            if errors := coop_data.get("errors", []):
+                for error in errors:
+                    error["time"] = timestamp.astimezone(
+                        tz=ZoneInfo("America/New_York")
+                    )
+                    self.errors.append(error)
+
             self.processed_data.append(entry)
 
 
@@ -47,6 +58,12 @@ def nulay_display(response_data: NuLayInn):
     with st.container():
         last_date: datetime = response_data.processed_data[-1].get("timestamp")
         st.write(f'Last Post Date: {last_date.strftime("%H:%M %B %e, %Y")}')
+
+    if response_data.errors:
+        with st.container():
+            st.header("🚨 Errors!")
+            df = pd.DataFrame(response_data.errors)[["time", "sensor", "message"]]
+            st.dataframe(df)
 
     df = pd.DataFrame(response_data.processed_data)
     df = df.sort_values(by="timestamp")

@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -19,11 +20,12 @@ class Germinator:
     def __process_data(self):
         for reading in self.readings:
             created = reading.get("created_date")
-            offset = timedelta(hours=-4)
-            timestamp = datetime.fromisoformat(created.replace("Z", "+00:00")) + offset
+            timestamp = datetime.fromisoformat(created)
+            if timestamp.tzinfo is None:
+                timestamp = timestamp.replace(tzinfo=timezone.utc)
             seed_data = reading.get("data", {})
             entry = {
-                "timestamp": timestamp,
+                "timestamp": timestamp.astimezone(tz=ZoneInfo("America/New_York")),
                 "lights_on": seed_data.get("lights", False),
                 "soil_temp": seed_data.get("soil", {}).get("soil_temp", 0),
                 "soil_temp_target_high": 86,
