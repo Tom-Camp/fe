@@ -11,6 +11,7 @@ class Germinator:
     data: dict = {}
     readings: list = []
     processed_data: list = []
+    errors: list = []
 
     def __init__(self, seed_data: dict):
         self.data = seed_data
@@ -52,6 +53,14 @@ class Germinator:
                 .get("temperature", {})
                 .get("target", [])[1],
             }
+
+            if errors := seed_data.get("errors", []):
+                for error in errors:
+                    error["time"] = timestamp.astimezone(
+                        tz=ZoneInfo("America/New_York")
+                    )
+                    self.errors.append(error)
+
             self.processed_data.append(entry)
 
 
@@ -62,6 +71,12 @@ def fetch_data(url: str) -> dict:
 
 
 def germination(response_data: Germinator):
+    if response_data.errors:
+        with st.container():
+            st.header("🚨 Errors!")
+            df = pd.DataFrame(response_data.errors)[["time", "sensor", "message"]]
+            st.dataframe(df)
+
     df = pd.DataFrame(response_data.processed_data)
     df = df.sort_values(by="timestamp")
 
